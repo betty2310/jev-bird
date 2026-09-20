@@ -4,6 +4,10 @@
 
 A tiny Flappy Bird-style arcade game where you can fly yourself or hand the wings to [TypeSafe Jev](https://typesafe.ai). A golden canary, a sunny canal, and one very important decision: **FLAP or WAIT?**
 
+![Jev playing in Auto mode, clearing pipes while live FLAP and WAIT probabilities update in the cockpit](media/jev-auto-demo.gif)
+
+**Jev takes the controls:** 10 pipes, 69 decisions, one real-time flight. Recorded with live TypeSafe API calls—no manual flaps or mocked answers.
+
 ## The idea
 
 What happens when an AI has to play a game that won't wait for its answer?
