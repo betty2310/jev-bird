@@ -1,0 +1,16 @@
+# Local credentials
+.env
+.env.*
+!.env.example
+
+# Dependencies and generated output
+node_modules/
+.playwright-cli/
+test/artifacts/
+logs/
+*.log
+coverage/
+
+# Local agent tooling and macOS metadata
+.agents/
+.DS_Store

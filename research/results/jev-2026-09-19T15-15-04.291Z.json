@@ -1,0 +1,4099 @@
+{
+  "summary": {
+    "started_at": "2026-09-19T15-15-04.291Z",
+    "completed_at": "2026-09-19T15:15:19.937Z",
+    "requested_model": "jev-1.13.0",
+    "resolved_models": [
+      "jev-1.13.0"
+    ],
+    "endpoint": "https://api.typesafe.ai/v1/systemone",
+    "node_version": "v24.15.0",
+    "tested_variants": [
+      "with_observations"
+    ],
+    "methodology": "Sequential Node fetch calls from this machine, one in flight, shared process/connection pool, four warmup calls excluded. Timer starts before fetch and ends after reading the full response body. No retries. Synthetic snapshots with small deterministic perturbations; when multiple variants are requested they use paired states and alternating order. Accuracy only measures a 300 ms, immediate-action, open-loop collision check; it does NOT measure network-delayed live gameplay. Forecast variant is explicitly assisted by local physics calculations. Observation variant adds current spatial/motion descriptions without action forecasts.",
+    "percentiles": "Nearest rank; small sample, not a service SLA.",
+    "stopped": null,
+    "cold_first_request_ms": 786.991,
+    "warmup_ms": [
+      786.991,
+      810.014,
+      312.814,
+      335.772
+    ],
+    "total_requests": 44,
+    "input_tokens": 38185,
+    "variants": {
+      "with_observations": {
+        "requests": 40,
+        "successes": 40,
+        "errors": 0,
+        "min_ms": 259.689,
+        "p50_ms": 325.876,
+        "p90_ms": 370.09,
+        "p95_ms": 385.435,
+        "max_ms": 509.794,
+        "mean_ms": 334.701,
+        "mean_input_tokens": 867.925,
+        "mean_request_bytes": 1864.175,
+        "correct": 40,
+        "accuracy": 1,
+        "above_100_ms": 40,
+        "above_200_ms": 40,
+        "above_300_ms": 30,
+        "incorrect": []
+      }
+    },
+    "estimated_input_cost_usd": 0.00160377
+  },
+  "rows": [
+    {
+      "index": 0,
+      "variant": "with_observations",
+      "phase": "warmup",
+      "case_name": "falling_near_floor",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 0,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 558.5,
+            "vy": 147,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "very close",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1877,
+      "headers_ms": 785.182,
+      "status": 200,
+      "elapsed_ms": 786.991,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.48,
+            "probabilities": {
+              "FLAP": 0.74,
+              "WAIT": 0.26
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 872,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 1,
+      "variant": "with_observations",
+      "phase": "warmup",
+      "case_name": "near_ceiling",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 1,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 33.5,
+            "vy": -3,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "very close",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1899,
+      "headers_ms": 809.489,
+      "status": 200,
+      "elapsed_ms": 810.014,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.39,
+            "probabilities": {
+              "FLAP": 0.3,
+              "WAIT": 0.7
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 871,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 2,
+      "variant": "with_observations",
+      "phase": "warmup",
+      "case_name": "inside_gap_near_bottom",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 2,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 372.5,
+            "vy": 157,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1836,
+      "headers_ms": 312.299,
+      "status": 200,
+      "elapsed_ms": 312.814,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.34,
+            "probabilities": {
+              "WAIT": 0.33,
+              "FLAP": 0.67
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 863,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 3,
+      "variant": "with_observations",
+      "phase": "warmup",
+      "case_name": "inside_gap_near_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 3,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 243.5,
+            "vy": 7,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1855,
+      "headers_ms": 335.269,
+      "status": 200,
+      "elapsed_ms": 335.772,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.12,
+            "probabilities": {
+              "FLAP": 0.44,
+              "WAIT": 0.56
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 862,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 0,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_near_floor",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 0,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 558.5,
+            "vy": 147,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "very close",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1877,
+      "headers_ms": 509.097,
+      "status": 200,
+      "elapsed_ms": 509.794,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.46,
+            "probabilities": {
+              "FLAP": 0.73,
+              "WAIT": 0.27
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 872,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 1,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_ceiling",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 1,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 33.5,
+            "vy": -3,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "very close",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1899,
+      "headers_ms": 348.508,
+      "status": 200,
+      "elapsed_ms": 348.964,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.4,
+            "probabilities": {
+              "FLAP": 0.3,
+              "WAIT": 0.7
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 871,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 2,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_bottom",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 2,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 372.5,
+            "vy": 157,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1836,
+      "headers_ms": 322.811,
+      "status": 200,
+      "elapsed_ms": 323.343,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.28,
+            "probabilities": {
+              "FLAP": 0.64,
+              "WAIT": 0.36
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 863,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 3,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 3,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 243.5,
+            "vy": 7,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1855,
+      "headers_ms": 384.835,
+      "status": 200,
+      "elapsed_ms": 385.435,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.09,
+            "probabilities": {
+              "WAIT": 0.55,
+              "FLAP": 0.45
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 862,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 4,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_below",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 4,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 418.5,
+            "vy": 157,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 135,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 260,
+              "gap_bottom": 430
+            },
+            {
+              "id": "p2",
+              "x": 415,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1869,
+      "headers_ms": 289.927,
+      "status": 200,
+      "elapsed_ms": 290.411,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.47,
+            "probabilities": {
+              "FLAP": 0.74,
+              "WAIT": 0.26
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 870,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 5,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_above",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 5,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 208.5,
+            "vy": 37,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 132,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 412,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1871,
+      "headers_ms": 372.007,
+      "status": 200,
+      "elapsed_ms": 372.433,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.29,
+            "probabilities": {
+              "WAIT": 0.64,
+              "FLAP": 0.36
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 869,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 6,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_in_high_gap",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 6,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 178.5,
+            "vy": 97,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 50,
+              "gap_bottom": 220
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is moderate",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1838,
+      "headers_ms": 324.228,
+      "status": 200,
+      "elapsed_ms": 324.426,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.2,
+            "probabilities": {
+              "WAIT": 0.4,
+              "FLAP": 0.6
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 861,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 7,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_high_gap_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 7,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 178.5,
+            "vy": -3,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 160,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1856,
+      "headers_ms": 284.313,
+      "status": 200,
+      "elapsed_ms": 284.564,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.25,
+            "probabilities": {
+              "WAIT": 0.63,
+              "FLAP": 0.37
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 863,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 8,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_near_floor",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 8,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 559.25,
+            "vy": 148.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "very close",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1880,
+      "headers_ms": 366.977,
+      "status": 200,
+      "elapsed_ms": 367.233,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.39,
+            "probabilities": {
+              "FLAP": 0.69,
+              "WAIT": 0.31
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 875,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 9,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_ceiling",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 9,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 34.25,
+            "vy": -1.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "very close",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1902,
+      "headers_ms": 318.896,
+      "status": 200,
+      "elapsed_ms": 319.249,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.3,
+            "probabilities": {
+              "FLAP": 0.35,
+              "WAIT": 0.65
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 874,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 10,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_bottom",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 10,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 373.25,
+            "vy": 158.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1840,
+      "headers_ms": 331.871,
+      "status": 200,
+      "elapsed_ms": 332.225,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.27,
+            "probabilities": {
+              "WAIT": 0.36,
+              "FLAP": 0.64
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 867,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 11,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 11,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 244.25,
+            "vy": 8.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1859,
+      "headers_ms": 470.557,
+      "status": 200,
+      "elapsed_ms": 470.832,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.1,
+            "probabilities": {
+              "FLAP": 0.45,
+              "WAIT": 0.55
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 866,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 12,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_below",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 12,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 419.25,
+            "vy": 158.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 135,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 260,
+              "gap_bottom": 430
+            },
+            {
+              "id": "p2",
+              "x": 415,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1873,
+      "headers_ms": 351.79,
+      "status": 200,
+      "elapsed_ms": 352.426,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.54,
+            "probabilities": {
+              "FLAP": 0.77,
+              "WAIT": 0.23
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 874,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 13,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_above",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 13,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 209.25,
+            "vy": 38.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 132,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 412,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1875,
+      "headers_ms": 363.851,
+      "status": 200,
+      "elapsed_ms": 364.137,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.3,
+            "probabilities": {
+              "FLAP": 0.35,
+              "WAIT": 0.65
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 873,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 14,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_in_high_gap",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 14,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 179.25,
+            "vy": 98.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 50,
+              "gap_bottom": 220
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is moderate",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1842,
+      "headers_ms": 278.425,
+      "status": 200,
+      "elapsed_ms": 278.712,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.31,
+            "probabilities": {
+              "FLAP": 0.66,
+              "WAIT": 0.34
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 865,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 15,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_high_gap_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 15,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 179.25,
+            "vy": -1.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 160,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1860,
+      "headers_ms": 336.981,
+      "status": 200,
+      "elapsed_ms": 337.192,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.2,
+            "probabilities": {
+              "FLAP": 0.4,
+              "WAIT": 0.6
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 867,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 16,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_near_floor",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 16,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 560,
+            "vy": 150,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "very close",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1876,
+      "headers_ms": 345.909,
+      "status": 200,
+      "elapsed_ms": 346.459,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.43,
+            "probabilities": {
+              "FLAP": 0.72,
+              "WAIT": 0.28
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 871,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 17,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_ceiling",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 17,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 35,
+            "vy": 0,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "very close",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1897,
+      "headers_ms": 363.38,
+      "status": 200,
+      "elapsed_ms": 363.618,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.33,
+            "probabilities": {
+              "WAIT": 0.66,
+              "FLAP": 0.34
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 869,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 18,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_bottom",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 18,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 374,
+            "vy": 160,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1835,
+      "headers_ms": 359.862,
+      "status": 200,
+      "elapsed_ms": 360.401,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.34,
+            "probabilities": {
+              "WAIT": 0.33,
+              "FLAP": 0.67
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 862,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 19,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 19,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 245,
+            "vy": 10,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1855,
+      "headers_ms": 314.854,
+      "status": 200,
+      "elapsed_ms": 315.157,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.2,
+            "probabilities": {
+              "FLAP": 0.4,
+              "WAIT": 0.6
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 862,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 20,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_below",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 20,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 420,
+            "vy": 160,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 135,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 260,
+              "gap_bottom": 430
+            },
+            {
+              "id": "p2",
+              "x": 415,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1868,
+      "headers_ms": 308.066,
+      "status": 200,
+      "elapsed_ms": 308.272,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.49,
+            "probabilities": {
+              "WAIT": 0.25,
+              "FLAP": 0.75
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 869,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 21,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_above",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 21,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 210,
+            "vy": 40,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 132,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 412,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1870,
+      "headers_ms": 360.163,
+      "status": 200,
+      "elapsed_ms": 360.382,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.26,
+            "probabilities": {
+              "FLAP": 0.37,
+              "WAIT": 0.63
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 868,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 22,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_in_high_gap",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 22,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 180,
+            "vy": 100,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 50,
+              "gap_bottom": 220
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is moderate",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1838,
+      "headers_ms": 299.602,
+      "status": 200,
+      "elapsed_ms": 299.873,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.16,
+            "probabilities": {
+              "FLAP": 0.58,
+              "WAIT": 0.42
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 861,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 23,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_high_gap_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 23,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 180,
+            "vy": 0,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 160,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1854,
+      "headers_ms": 339.922,
+      "status": 200,
+      "elapsed_ms": 340.188,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.19,
+            "probabilities": {
+              "FLAP": 0.41,
+              "WAIT": 0.59
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 861,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 24,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_near_floor",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 24,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 560.75,
+            "vy": 151.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "very close",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1881,
+      "headers_ms": 318.543,
+      "status": 200,
+      "elapsed_ms": 319.024,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.42,
+            "probabilities": {
+              "FLAP": 0.71,
+              "WAIT": 0.29
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 876,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 25,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_ceiling",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 25,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 35.75,
+            "vy": 1.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "very close",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1902,
+      "headers_ms": 319.85,
+      "status": 200,
+      "elapsed_ms": 320.176,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.28,
+            "probabilities": {
+              "FLAP": 0.36,
+              "WAIT": 0.64
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 874,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 26,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_bottom",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 26,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 374.75,
+            "vy": 161.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1840,
+      "headers_ms": 283.443,
+      "status": 200,
+      "elapsed_ms": 283.645,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.32,
+            "probabilities": {
+              "WAIT": 0.34,
+              "FLAP": 0.66
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 867,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 27,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 27,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 245.75,
+            "vy": 11.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1860,
+      "headers_ms": 325.522,
+      "status": 200,
+      "elapsed_ms": 325.876,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.12,
+            "probabilities": {
+              "FLAP": 0.44,
+              "WAIT": 0.56
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 867,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 28,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_below",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 28,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 420.75,
+            "vy": 161.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 135,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 260,
+              "gap_bottom": 430
+            },
+            {
+              "id": "p2",
+              "x": 415,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1873,
+      "headers_ms": 329.485,
+      "status": 200,
+      "elapsed_ms": 329.949,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.48,
+            "probabilities": {
+              "FLAP": 0.74,
+              "WAIT": 0.26
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 874,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 29,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_above",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 29,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 210.75,
+            "vy": 41.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 132,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 412,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is moderate",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1879,
+      "headers_ms": 346.962,
+      "status": 200,
+      "elapsed_ms": 347.272,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.16,
+            "probabilities": {
+              "FLAP": 0.42,
+              "WAIT": 0.58
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 873,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 30,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_in_high_gap",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 30,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 180.75,
+            "vy": 101.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 50,
+              "gap_bottom": 220
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1839,
+      "headers_ms": 306.212,
+      "status": 200,
+      "elapsed_ms": 306.647,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.33,
+            "probabilities": {
+              "FLAP": 0.66,
+              "WAIT": 0.34
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 866,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 31,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_high_gap_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 31,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 180.75,
+            "vy": 1.5,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 160,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1859,
+      "headers_ms": 369.606,
+      "status": 200,
+      "elapsed_ms": 370.09,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.22,
+            "probabilities": {
+              "WAIT": 0.61,
+              "FLAP": 0.39
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 866,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 32,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_near_floor",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 32,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 561.5,
+            "vy": 153,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "very close",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1878,
+      "headers_ms": 259.364,
+      "status": 200,
+      "elapsed_ms": 259.689,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.44,
+            "probabilities": {
+              "FLAP": 0.72,
+              "WAIT": 0.28
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 873,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 33,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_ceiling",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 33,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 36.5,
+            "vy": 3,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 380,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 660,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "very close",
+            "next_pipe_horizontal_relation": "farther ahead, not reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1899,
+      "headers_ms": 345.491,
+      "status": 200,
+      "elapsed_ms": 345.856,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.21,
+            "probabilities": {
+              "FLAP": 0.4,
+              "WAIT": 0.6
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 871,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 34,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_bottom",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 34,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 375.5,
+            "vy": 163,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1837,
+      "headers_ms": 285.808,
+      "status": 200,
+      "elapsed_ms": 286.15,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.3,
+            "probabilities": {
+              "FLAP": 0.65,
+              "WAIT": 0.35
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 864,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 35,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "inside_gap_near_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 35,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 246.5,
+            "vy": 13,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 220,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1857,
+      "headers_ms": 289.721,
+      "status": 200,
+      "elapsed_ms": 290.112,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.15,
+            "probabilities": {
+              "WAIT": 0.58,
+              "FLAP": 0.42
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 864,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 36,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_below",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 36,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 421.5,
+            "vy": 163,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 135,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 260,
+              "gap_bottom": 430
+            },
+            {
+              "id": "p2",
+              "x": 415,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends below the opening; bird needs to rise to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1870,
+      "headers_ms": 287.373,
+      "status": 200,
+      "elapsed_ms": 287.625,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.52,
+            "probabilities": {
+              "FLAP": 0.76,
+              "WAIT": 0.24
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 871,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 37,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "approaching_gap_from_above",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 37,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 211.5,
+            "vy": 43,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 132,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 200,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 412,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is moderate",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "bird extends above the opening; bird needs to descend to fit through it"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1876,
+      "headers_ms": 293.087,
+      "status": 200,
+      "elapsed_ms": 293.623,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.27,
+            "probabilities": {
+              "FLAP": 0.36,
+              "WAIT": 0.64
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 870,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 38,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "falling_in_high_gap",
+      "expected": "FLAP",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 38,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 181.5,
+            "vy": 103,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 50,
+              "gap_bottom": 220
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "falling; speed is fast",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its lower edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1836,
+      "headers_ms": 315.211,
+      "status": 200,
+      "elapsed_ms": 315.561,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "FLAP",
+            "confidence": 0.32,
+            "probabilities": {
+              "FLAP": 0.66,
+              "WAIT": 0.34
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 863,
+          "output_tokens": 33
+        }
+      },
+      "correct": true
+    },
+    {
+      "index": 39,
+      "variant": "with_observations",
+      "phase": "measured",
+      "case_name": "near_high_gap_top",
+      "expected": "WAIT",
+      "request": {
+        "model": "jev-1.13.0",
+        "state": {
+          "game": "flappy_bird",
+          "frame_id": 39,
+          "coordinate_system": "Pixels; x increases right, y increases down; velocities in pixels/second.",
+          "world": {
+            "ceiling_y": 0,
+            "floor_y": 600,
+            "gravity_y": 900
+          },
+          "bird": {
+            "x": 96,
+            "y": 181.5,
+            "vy": 3,
+            "radius": 12,
+            "alive": true
+          },
+          "controls": {
+            "flap_sets_vy": -300,
+            "flap_available": true,
+            "horizon_seconds": 0.3
+          },
+          "physics": "Bird stays at fixed x. y(t)=y+vy*t+0.5*gravity_y*t*t. Pipes move at vx. A circle touching a pipe rectangle, floor or ceiling is a collision. Top pipe fills ceiling to gap_top; bottom pipe fills gap_bottom to floor.",
+          "pipes": [
+            {
+              "id": "p1",
+              "x": 110,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 160,
+              "gap_bottom": 400
+            },
+            {
+              "id": "p2",
+              "x": 390,
+              "width": 64,
+              "vx": -140,
+              "gap_top": 180,
+              "gap_bottom": 390
+            }
+          ],
+          "observations": {
+            "source": "Descriptions of current geometry and motion computed in code. No action forecast or recommended action is included.",
+            "vertical_motion": "almost stationary vertically; speed is slow",
+            "floor_proximity": "far",
+            "ceiling_proximity": "far",
+            "next_pipe_horizontal_relation": "very close ahead, reached within this horizon",
+            "bird_relative_to_gap": "inside opening, near its upper edge"
+          }
+        },
+        "questions": {
+          "action": {
+            "type": "choice",
+            "instructions": "Choose the action that avoids collision during the next `controls.horizon_seconds`. Apply the action immediately at this snapshot, then perform no further flaps during that horizon. Use the provided physics. If `action_forecasts` is present, it contains trajectories already calculated by the game engine. Prefer the action with no collision. If both are safe, prefer WAIT. If both collide, prefer the later collision.",
+            "criteria": {
+              "FLAP": "Press space exactly once now, setting vertical velocity to controls.flap_sets_vy, then coast under gravity for the horizon.",
+              "WAIT": "Do not press space. Keep current vertical velocity and coast under gravity for the horizon."
+            }
+          }
+        }
+      },
+      "request_bytes": 1856,
+      "headers_ms": 350.769,
+      "status": 200,
+      "elapsed_ms": 351.024,
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "action": {
+            "type": "choice",
+            "choice": "WAIT",
+            "confidence": 0.21,
+            "probabilities": {
+              "FLAP": 0.39,
+              "WAIT": 0.61
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 863,
+          "output_tokens": 32
+        }
+      },
+      "correct": true
+    }
+  ]
+}

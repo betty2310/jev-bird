@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#f6f5ee" />
+        <meta
+            name="description"
+            content="Small wings, big adventure. Play Pipeworks, a cheerful flying game with an optional TypeSafe Jev co-pilot."
+        />
+        <title>Pipeworks — a little flight of fancy</title>
+        <link rel="icon" href="/bird.svg" type="image/svg+xml" />
+        <link rel="stylesheet" href="/styles.css" />
+        <script type="module" src="/app.js"></script>
+    </head>
+    <body>
+        <svg
+            class="svg-defs"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+        >
+            <defs>
+                <symbol id="i-feather" viewBox="0 0 24 24">
+                    <path
+                        d="M20 4c-8-4-15 3-13 11l-3 5m3-5 9-9m-8 5 5 1m-3-4 1 5"
+                    />
+                </symbol>
+                <symbol id="i-spark" viewBox="0 0 24 24">
+                    <path
+                        d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"
+                    />
+                </symbol>
+                <symbol id="i-arrow" viewBox="0 0 24 24">
+                    <path d="M4 12h15m-6-6 6 6-6 6" />
+                </symbol>
+                <symbol id="i-pause" viewBox="0 0 24 24">
+                    <path d="M8 5v14M16 5v14" />
+                </symbol>
+                <symbol id="i-reset" viewBox="0 0 24 24">
+                    <path d="M4 10a8 8 0 1 1 1 7M4 4v6h6" />
+                </symbol>
+                <symbol id="i-sound" viewBox="0 0 24 24">
+                    <path
+                        d="m11 5-5 4H3v6h3l5 4ZM15 8c3 2 3 6 0 8m3-11c5 4 5 10 0 14"
+                    />
+                </symbol>
+                <symbol id="i-mute" viewBox="0 0 24 24">
+                    <path d="m11 5-5 4H3v6h3l5 4ZM16 9l5 6m0-6-5 6" />
+                </symbol>
+                <symbol id="i-close" viewBox="0 0 24 24">
+                    <path d="m6 6 12 12M6 18 18 6" />
+                </symbol>
+                <symbol id="i-code" viewBox="0 0 24 24">
+                    <path d="m7 7-5 5 5 5m10-10 5 5-5 5m-4-13-2 16" />
+                </symbol>
+                <symbol id="i-link" viewBox="0 0 24 24">
+                    <path d="M14 4h6v6m0-6L10 14m0-10H4v16h16v-6" />
+                </symbol>
+            </defs>
+        </svg>
+
+        <div class="page-shell">
+            <nav class="masthead" aria-label="Main">
+                <a href="/" class="wordmark"
+                    ><span class="brand-icon"
+                        ><svg><use href="#i-feather" /></svg
+                    ></span>
+                    little arcade<span class="brand-period">.</span></a
+                >
+                <span class="masthead-note"
+                    >A SMALL ESCAPE FROM THE EVERYDAY</span
+                >
+                <a
+                    class="typesafe-link"
+                    href="https://typesafe.ai"
+                    target="_blank"
+                    rel="noreferrer"
+                    >A little help from <strong>TypeSafe</strong
+                    ><svg><use href="#i-link" /></svg
+                ></a>
+            </nav>
+
+            <main>
+                <header class="page-heading">
+                    <div>
+                        <div class="eyebrow">
+                            <span class="sun-dot"></span> NO. 01 &nbsp; / &nbsp;
+                            THE CANAL COLLECTION
+                        </div>
+                        <h1>Small wings. <em>Big adventure.</em></h1>
+                        <p>
+                            A little courage. A little lift. Just one more pipe.
+                        </p>
+                    </div>
+                    <div class="heading-stamp">
+                        <svg><use href="#i-spark" /></svg
+                        ><span
+                            >Made for your<br /><em
+                                >five-minute break.</em
+                            ></span
+                        >
+                    </div>
+                </header>
+
+                <div class="play-layout">
+                    <section class="game-card" aria-label="Pipeworks game">
+                        <div class="game-topline">
+                            <span class="game-title"
+                                ><img
+                                    src="/bird.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                />
+                                PIPEWORKS</span
+                            ><span class="location"
+                                ><span></span> THE CANAL · DAYLIGHT</span
+                            ><span class="best-label"
+                                >BEST <strong id="best-score">00</strong></span
+                            >
+                        </div>
+                        <div class="game-stage" id="game-stage">
+                            <canvas
+                                id="game"
+                                width="960"
+                                height="540"
+                                tabindex="0"
+                                aria-label="Pipeworks. Press Space, click, or tap to flap. P pauses and R restarts."
+                                >Your browser needs Canvas support to play
+                                Pipeworks.</canvas
+                            >
+                            <div
+                                class="stage-score"
+                                id="stage-score"
+                                aria-hidden="true"
+                            >
+                                0
+                            </div>
+                            <div class="stage-mode" id="stage-mode" hidden>
+                                <span></span> JEV IS FLYING
+                            </div>
+                            <div class="game-overlay" id="game-overlay">
+                                <div class="overlay-content">
+                                    <span
+                                        class="overlay-eyebrow"
+                                        id="overlay-eyebrow"
+                                        >A LITTLE FLIGHT OF FANCY</span
+                                    >
+                                    <h2 id="overlay-title">
+                                        Hello, little bird.
+                                    </h2>
+                                    <p id="overlay-copy">
+                                        The sky is yours.<br />Let’s see how far
+                                        you can go.
+                                    </p>
+                                    <div
+                                        class="final-score"
+                                        id="final-score"
+                                        hidden
+                                    >
+                                        <strong id="final-value">0</strong
+                                        ><span>PIPES PASSED</span>
+                                    </div>
+                                    <button
+                                        class="primary-button"
+                                        id="play-button"
+                                    >
+                                        <span id="play-label">Let’s fly</span
+                                        ><svg>
+                                            <use href="#i-arrow" />
+                                        </svg></button
+                                    ><span class="start-hint" id="start-hint"
+                                        >or press <kbd>space</kbd> to
+                                        start</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="game-toolbar">
+                            <div class="pilot-status">
+                                <span id="pilot-dot"></span
+                                ><span id="pilot-label">YOU’RE THE PILOT</span>
+                            </div>
+                            <span class="toolbar-hint"
+                                ><kbd>space</kbd> to flap <span>·</span>
+                                <kbd>P</kbd> to pause</span
+                            >
+                            <div class="tool-buttons">
+                                <button
+                                    class="icon-button"
+                                    id="pause-button"
+                                    aria-label="Pause game"
+                                    title="Pause (P)"
+                                    disabled
+                                >
+                                    <svg><use href="#i-pause" /></svg></button
+                                ><button
+                                    class="icon-button"
+                                    id="restart-button"
+                                    aria-label="Restart game"
+                                    title="Restart (R)"
+                                >
+                                    <svg><use href="#i-reset" /></svg></button
+                                ><button
+                                    class="icon-button"
+                                    id="sound-button"
+                                    aria-label="Enable sound"
+                                    title="Enable sound"
+                                    aria-pressed="false"
+                                >
+                                    <svg>
+                                        <use id="sound-icon" href="#i-mute" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <aside class="cockpit" aria-label="Flight controls">
+                        <div class="eyebrow cockpit-eyebrow">
+                            THE COCKPIT <svg><use href="#i-spark" /></svg>
+                        </div>
+                        <h2>Who’s flying?</h2>
+                        <div
+                            class="mode-switch"
+                            role="group"
+                            aria-label="Pilot mode"
+                        >
+                            <button
+                                id="manual-mode"
+                                class="selected"
+                                aria-pressed="true"
+                            >
+                                <svg><use href="#i-feather" /></svg> You</button
+                            ><button id="auto-mode" aria-pressed="false">
+                                <svg><use href="#i-spark" /></svg> Auto
+                                <span class="tiny-badge">JEV</span>
+                            </button>
+                        </div>
+                        <div id="manual-panel">
+                            <div class="pilot-intro">
+                                <div class="bird-avatar">
+                                    <img
+                                        src="/bird.svg"
+                                        width="42"
+                                        height="42"
+                                        alt="Golden canary"
+                                    />
+                                </div>
+                                <div>
+                                    <strong>A natural-born flyer.</strong
+                                    ><span>That’s you, by the way.</span>
+                                </div>
+                            </div>
+                            <div class="controls-guide">
+                                <div>
+                                    <kbd>space</kbd><span>A little flap</span>
+                                </div>
+                                <div>
+                                    <kbd>click / tap</kbd
+                                    ><span>That works, too</span>
+                                </div>
+                                <div>
+                                    <kbd>P</kbd><span>Catch your breath</span>
+                                </div>
+                            </div>
+                            <div class="auto-invite">
+                                <span class="invite-icon"
+                                    ><svg><use href="#i-spark" /></svg
+                                ></span>
+                                <h3>A curious co-pilot.</h3>
+                                <p>
+                                    See the world through Jev’s eyes. Bring your
+                                    TypeSafe key and let Auto take a turn.
+                                </p>
+                                <button id="try-auto" class="text-button">
+                                    Meet your co-pilot
+                                    <svg><use href="#i-arrow" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="auto-panel" hidden>
+                            <div class="auto-connection">
+                                <span class="connection-dot"></span
+                                ><span>Jev is connected</span
+                                ><button
+                                    id="disconnect-button"
+                                    class="subtle-button"
+                                >
+                                    Disconnect
+                                </button>
+                            </div>
+                            <div class="decision-box">
+                                <span class="eyebrow">THE NEXT MOVE</span>
+                                <div class="decision-word" id="decision-word">
+                                    Ready to fly<span
+                                        class="decision-dot"
+                                    ></span>
+                                </div>
+                                <p id="observation-copy">
+                                    One little decision at a time.
+                                </p>
+                            </div>
+                            <div class="probability-row">
+                                <span>Flap</span>
+                                <div class="probability-track">
+                                    <span id="flap-probability"></span>
+                                </div>
+                                <strong id="flap-percent">—</strong>
+                            </div>
+                            <div class="probability-row wait-row">
+                                <span>Wait</span>
+                                <div class="probability-track">
+                                    <span id="wait-probability"></span>
+                                </div>
+                                <strong id="wait-percent">—</strong>
+                            </div>
+                            <dl class="auto-stats">
+                                <div>
+                                    <dt>Response</dt>
+                                    <dd id="latency">—<small> ms</small></dd>
+                                </div>
+                                <div>
+                                    <dt>Decisions</dt>
+                                    <dd id="decision-count">0</dd>
+                                </div>
+                            </dl>
+                            <p class="auto-note">
+                                The same bird. The same rules.<br />Jev chooses
+                                when to flap.
+                            </p>
+                        </div>
+                        <div class="flight-record">
+                            <span>YOUR BEST FLIGHT</span
+                            ><strong
+                                ><span id="record-score">0</span>
+                                <small>pipes</small
+                                ><svg><use href="#i-feather" /></svg
+                            ></strong>
+                        </div>
+                    </aside>
+                </div>
+
+                <div class="below-game">
+                    <p>
+                        <span>✦</span> A tiny reminder: falling is just part of
+                        learning to fly.
+                    </p>
+                    <button
+                        class="state-toggle"
+                        id="state-toggle"
+                        aria-expanded="false"
+                        aria-controls="state-panel"
+                    >
+                        <svg><use href="#i-code" /></svg> Under the wing
+                        <span>+</span>
+                    </button>
+                </div>
+                <section
+                    id="state-panel"
+                    class="state-panel"
+                    hidden
+                    aria-label="Live game state"
+                >
+                    <div>
+                        <h2>A peek under the wing.</h2>
+                        <p>
+                            The bird, the pipes, and the little details behind
+                            every decision. State updates live; your API key is
+                            never included.
+                        </p>
+                        <span class="state-label" id="state-label"
+                            >LIVE GAME STATE</span
+                        >
+                    </div>
+                    <pre id="state-output" tabindex="0"></pre>
+                </section>
+            </main>
+            <footer class="page-footer">
+                <span
+                    >PIPEWORKS <span class="footer-separator">/</span> EST.
+                    2026</span
+                ><span
+                    >Stay curious. Keep flapping.<svg>
+                        <use href="#i-feather" /></svg
+                ></span>
+            </footer>
+        </div>
+
+        <dialog id="key-dialog" aria-labelledby="key-title">
+            <button
+                class="icon-button modal-close"
+                id="close-dialog"
+                aria-label="Close Auto setup"
+            >
+                <svg><use href="#i-close" /></svg>
+            </button>
+            <div class="modal-icon">
+                <svg><use href="#i-spark" /></svg>
+            </div>
+            <div class="eyebrow">POWERED BY TYPESAFE JEV</div>
+            <h2 id="key-title">Meet your co-pilot.</h2>
+            <p>
+                Give Jev the controls. It reads the bird and the pipes, then
+                chooses when to flap.
+            </p>
+            <form id="key-form">
+                <label for="api-key">Your TypeSafe API key</label
+                ><input
+                    id="api-key"
+                    type="password"
+                    placeholder="Paste your API key"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                    minlength="8"
+                    maxlength="1000"
+                    aria-describedby="key-privacy key-error"
+                />
+                <p class="privacy-note" id="key-privacy">
+                    Kept in this tab’s memory and sent through this app to
+                    TypeSafe. Cleared when you disconnect or refresh.
+                </p>
+                <p class="form-error" id="key-error" role="alert" hidden></p>
+                <button
+                    class="primary-button"
+                    id="connect-button"
+                    type="submit"
+                >
+                    <span>Connect Auto</span><svg><use href="#i-arrow" /></svg>
+                </button>
+            </form>
+            <a
+                class="get-key-link"
+                href="https://console.typesafe.ai"
+                target="_blank"
+                rel="noreferrer"
+                >Get a key at TypeSafe <svg><use href="#i-link" /></svg
+            ></a>
+        </dialog>
+        <div class="toast" id="toast" role="status" hidden></div>
+        <div class="sr-only" id="game-announcement" aria-live="polite"></div>
+    </body>
+</html>
